@@ -8,5 +8,6 @@ The Game of Life involves an infinite two-dinmensional orthogonal grid of square
 2. Any dead cell with three live neighbours becomes a live cell.
 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
-With the initial pattern acting as the seed, the subsequent generations are pure functions of the preceding one. The rules are continually applied to create further generations and in some cases produce patterns with particular properties as shown below.
+With the initial pattern acting as the seed, the subsequent generations are pure functions of the preceding one. The rules are continually applied to create further generations and in some cases produce complex patterns with particular properties as shown below.
 
+![Video](data/gol.gif)
