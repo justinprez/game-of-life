@@ -1,0 +1,280 @@
+\documentclass[12pt]{article}
+
+\usepackage{graphicx}
+\usepackage{paralist}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{hhline}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{url}
+
+\oddsidemargin -10mm
+\evensidemargin -10mm
+\textwidth 160mm
+\textheight 200mm
+\renewcommand\baselinestretch{1.0}
+
+\pagestyle {plain}
+\pagenumbering{arabic}
+
+\newcounter{stepnum}
+
+%% Comments
+
+\usepackage{color}
+
+\newif\ifcomments\commentstrue
+
+\ifcomments
+\newcommand{\authornote}[3]{\textcolor{#1}{[#3 ---#2]}}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\else
+\newcommand{\authornote}[3]{}
+\newcommand{\todo}[1]{}
+\fi
+
+\newcommand{\wss}[1]{\authornote{blue}{SS}{#1}}
+
+\title{Assignment 4, Part 1, Specification}
+\author{SFWR ENG 2AA4}
+
+\begin {document}
+
+\maketitle
+
+\begin{center}
+Justin Prez
+\end{center}
+
+\bigskip
+This Module Interface Specification (MIS) document contains modules, types and
+methods for implementing the state of a game of Conway's Game of Life.
+
+\newpage
+
+\section* {Game Board ADT Module}
+
+\subsection*{Template Module}
+
+BoardT
+
+\subsection* {Uses}
+
+N/A
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new BoardT & $s$ : string & BoardT & invalid\_argument, out\_of\_range\\
+\hline
+next\_generation & & & \\
+\hline
+get\_grid & & seq of $\mathbb{N}$  & \\
+\hline
+get\_columns & & $\mathbb{N}$ & \\
+\hline
+get\_rows & & $\mathbb{N}$ & \\
+\hline
+\end{tabular}
+
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+$G$: Seq of $\mathbb{N}$ \textit{\# Grid of 0s and 1s}\\
+$C$: $\mathbb{N}$ \textit{\# Number of Columns}\\
+$R$: $\mathbb{N}$ \textit{\# Number of Rows}\\
+
+\subsubsection* {State Invariant}
+$|G| = R * C$
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+\begin{itemize}
+\item The BoardT constructor is called before any other access
+  routine is called on that instance. Once a BoardT has been created, the
+  constructor will not be called on it again.
+\item Once instantiated the size of the board will not change.
+\item The input file will match the given specifications below.
+\item This implementation of the game board assumes infinite "wrap around" property of the board. The cells on the right most edge are the neighbors of the left most edge, and the same goes for the top and bottom most edges.
+\item For better scalability, this module is specified as an Abstract Data Type
+  (ADT) instead of an Abstract Object. This would allow multiple games to be
+  created and tracked at once by a client.
+\end{itemize}
+
+
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent BoardT($\mathit{filename}$):
+\begin{itemize}
+\item transition: read data from an input file associated with the input string. Use this data to instantiate the BoardT state variables.
+
+The text file has the following format where $row_i$, $col_j$, and $c_{ij}$ stand for values that represents the number of rows, number of columns and the life state of each cell, respectively. Note that a cell value can either be $0$ representing a dead cell or $1$ representing a live cell. All data values in a row are separated by a single white space. Rows are separated by a new line. The total number of $c_i$ values is equal to the value corresponding to $row_i * col_j$.
+
+  \begin{equation}
+    \begin{array}{ccccccc}
+      row_i & col_j &  &  &  & &  \\
+      c_{00} & c_{01} & c_{02} & c_{03} & c_{04} & ... & c_{0j}\\
+      c_{10} & c_{11} & c_{12} & c_{13} & c_{14} & ... & c_{1j}\\
+      \\
+      ..., & ..., & ..., & ..., & ..., & ... & ...
+      \\
+      c_{i0} & c_{i1} & c_{i2} & c_{i3} & c_{i4} & ... & c_{ij}\\ \\
+    \end{array}
+  \end{equation}
+
+\item exception: $exc := ((|G| \ne R * C) \Rightarrow \text{out\_of\_range})$
+\item exception: if the input string does not correspond to an existing file or a valid file $\Rightarrow \text{invalid\_argument}$
+\end{itemize}
+
+\newpage
+
+\noindent next\_generation():
+\begin{itemize}
+\item transition: $(i : \mathbb{N}| i \in [0..R-1] : (j : \mathbb{N} |j \in [0..C-1] :$
+
+\begin{tabular}{| l | l | l |}
+\hline
+\textbf{current state} & \textbf{count\_neighbours} & \textbf{transition}\\
+\hline
+$G[i*C + j] = 0$ & count\_neighbors($j$,$i$) $= 3$ & $G[i*C + j] := 1$ \\
+\hline
+$G[i*C + j] = 1$ & count\_neighbors($j$,$i$) $< 2$ $\lor$ count\_neighbors($j$,$i$)  $> 3$ & $G[i*C + j] := 0$ \\
+\hline
+\end{tabular}
+
+\item exception: none
+
+\end{itemize}
+
+\noindent get\_grid():
+\begin{itemize}
+\item output: $out := G$
+\item exception: None
+\end{itemize}
+
+
+\noindent get\_columns():
+\begin{itemize}
+\item output: $out := C$
+\item exception: None
+\end{itemize}
+
+
+\noindent get\_rows():
+\begin{itemize}
+\item output: $out := R$
+\item exception: None
+\end{itemize}
+
+
+\subsection*{Local Functions}
+
+\noindent $\text{count\_neighbors}: \mathbb{N} \times \mathbb{N} \Rightarrow \mathbb{N}$\\
+\noindent $\text{count\_neighbors}(x, y) \equiv +(i : \mathbb{Z} | i \in [-1..1] : (j : \mathbb{Z} |j \in [-1..1] : G[(x+i+C)\%C +((y+j+R)\%R)*C)])) - G[x + y * C]$\\
+
+
+\newpage
+
+\section* {Write Module}
+
+\subsection* {Module}
+
+Write
+
+\subsection* {Uses}
+
+BoardT
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Access Programs}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+write\_to\_terminal & seq of $\mathbb{N}$, $\mathbb{N}$, $\mathbb{N}$  & & \\
+\hline
+write\_to\_file & seq of $\mathbb{N}$, $\mathbb{N}$, $\mathbb{N}$, $s$ : string & & invalid\_argument \\
+\hline
+\end{tabular}
+
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+None
+
+\subsubsection* {State Invariant}
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+\begin{itemize}
+\item output file could potentially be used again as input again, so the formatting needs to be the exact same as specified above.
+\end{itemize}
+
+
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent write\_to\_file($G$,$C$,$R$,$s$):
+\begin{itemize}
+\item output: The current state of the Boards grid, as well as the number of rows and columns are passed to the function along with the string $s$ for the output file. The textfile will have the following format: The first line consists of the number of rows and columns separated by a space. There will be $R$ rows after separated by new lines with $C$ columns per row separated by white spaces.
+
+  \begin{equation}
+    \begin{array}{ccccccc}
+      row_i & col_j &  &  &  & &  \\
+      c_{00} & c_{01} & c_{02} & c_{03} & c_{04} & ... & c_{0j}\\
+      c_{10} & c_{11} & c_{12} & c_{13} & c_{14} & ... & c_{1j}\\
+      \\
+      ..., & ..., & ..., & ..., & ..., & ... & ...
+      \\
+      c_{i0} & c_{i1} & c_{i2} & c_{i3} & c_{i4} & ... & c_{ij}\\ \\
+    \end{array}
+  \end{equation}
+
+\item exception: If there is an error opening the file $\Rightarrow \text{invalid\_argument}$
+\end{itemize}
+
+
+\noindent write\_to\_terminal($G$,$C$,$R$):
+\begin{itemize}
+\item output: The current state of the Boards grid, as well as the number of rows and columns are passed to the function. The grid will be printed to the console in the following format: The first line consists of the number of rows and columns separated by a space. There will be $R$ rows after separated by new lines with $C$ columns per row separated by white spaces.
+
+  \begin{equation}
+    \begin{array}{ccccccc}
+      row_i & col_j &  &  &  & &  \\
+      c_{00} & c_{01} & c_{02} & c_{03} & c_{04} & ... & c_{0j}\\
+      c_{10} & c_{11} & c_{12} & c_{13} & c_{14} & ... & c_{1j}\\
+      \\
+      ..., & ..., & ..., & ..., & ..., & ... & ...
+      \\
+      c_{i0} & c_{i1} & c_{i2} & c_{i3} & c_{i4} & ... & c_{ij}\\ \\
+    \end{array}
+  \end{equation}
+
+\item exception: None
+\end{itemize}
+
+\newpage
+
+\section*{Critique of Design}
+I believe that my implementation was consistent as for the most part in my code. I avoided using namespace std to see the derivatives of where the functions were coming from, and defined unsigned integers as "nat" to improve understandability and consistency in the code. Essentiality was violated with the accessor methods but was a necessary violation in order to test the code segments, and view the state of the board (via the write functions). This implementation is not as general as it requires a very specific input and only accepts grids of 0s and 1s. This could be improved by accepting a wider variety of input formats and recogonzining different patterns of pairs besides simply 1s and 0s. This implementation preserves minimality as all access routines provide only 1 independent service that is not provided by any other accessor method routine. My implementation has high cohesion and low coupling amoung the modules as the components of the modules are closely related (i.e. accessor methods of state variables, updating the state variable...) and do not strongly depend on other modules. Information Hiding as the state variables are protected by encapsulation, and methods like count\_neighbors(x,y) which changes for every cell on every generation update is only accessed within the BoardT module can not be accessed publically.
+
+\end {document}

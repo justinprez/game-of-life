@@ -1,0 +1,35 @@
+\hypertarget{_write_8h}{}\section{include/\+Write.h File Reference}
+\label{_write_8h}\index{include/\+Write.\+h@{include/\+Write.\+h}}
+
+
+Header module that contains the functions used to write the board simulation to the terminal or text file.  
+
+
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{_write_8h_a56638ee9d162e8cce3a15f92d2023d6e}\label{_write_8h_a56638ee9d162e8cce3a15f92d2023d6e}} 
+typedef unsigned int {\bfseries nat}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{_write_8h_a2d18c6922a15680292766b87f0a41e36}\label{_write_8h_a2d18c6922a15680292766b87f0a41e36}} 
+void \hyperlink{_write_8h_a2d18c6922a15680292766b87f0a41e36}{write\+\_\+to\+\_\+terminal} (std\+::vector$<$ nat $>$ grid, nat rows, nat columns)
+\begin{DoxyCompactList}\small\item\em Function to write the game board to the terminal console. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{_write_8h_a483cade50ebb72a31a570d8d0dd16a42}\label{_write_8h_a483cade50ebb72a31a570d8d0dd16a42}} 
+void \hyperlink{_write_8h_a483cade50ebb72a31a570d8d0dd16a42}{write\+\_\+to\+\_\+file} (std\+::vector$<$ nat $>$ grid, nat rows, nat columns, std\+::string filename)
+\begin{DoxyCompactList}\small\item\em Function to write the game board to a specified text file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Header module that contains the functions used to write the board simulation to the terminal or text file. 
+
+\begin{DoxyAuthor}{Author}
+Justin Prez, prezj 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2019/04/08 
+\end{DoxyDate}
